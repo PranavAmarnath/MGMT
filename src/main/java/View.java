@@ -109,7 +109,6 @@ public class View {
                     AbstractAction nameAction = new AbstractAction() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            System.out.println(id);
                             DefaultTableModel model = (DefaultTableModel) table.getModel();
                             model.addRow(new Object[]{model.getRowCount()+1, id, nameField.getText(), "00:00:00", "false", "0"});
                             table.setModel(model);
