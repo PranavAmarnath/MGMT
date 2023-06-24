@@ -93,6 +93,13 @@ public class View {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String id = idField.getText();
+                    for(int i = 0; i < table.getModel().getRowCount(); i++) {
+                        if(table.getModel().getValueAt(i, 1).equals(id)) {
+                            JOptionPane.showMessageDialog(dialog, "ID already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                            idField.setText("");
+                            return;
+                        }
+                    }
                     JPanel namePanel = new JPanel(new BorderLayout());
                     namePanel.setBorder(new EmptyBorder(30, 50, 30, 50));
                     JLabel nameLabel = new JLabel("Enter name:", JLabel.LEFT);
