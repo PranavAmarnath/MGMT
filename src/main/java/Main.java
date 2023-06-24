@@ -17,10 +17,15 @@ public class Main {
     public static void main(String[] args) throws URISyntaxException {
         FlatLightLaf.setup();
         SwingUtilities.invokeLater(View::new);
-        file = getFileFromResource("data.csv");
+        String fileName = "data.csv";
+        File jarFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+        String inputFilePath = jarFile.getParent() + File.separator + fileName;
+        file = getFileFromResource(inputFilePath);
+        //file = getFileFromResource("data.csv");
     }
 
     private static File getFileFromResource(String fileName) throws URISyntaxException {
+        /*
         ClassLoader classLoader = Main.class.getClassLoader();
         URL resource = classLoader.getResource(fileName);
         if (resource == null) {
@@ -28,7 +33,8 @@ public class Main {
         } else {
             return new File(resource.toURI());
         }
-        return null;
+        */
+        return new File(fileName);
     }
 
     public static void createModel(JTable table, boolean refresh) {
