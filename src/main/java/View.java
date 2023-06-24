@@ -1,3 +1,4 @@
+import com.formdev.flatlaf.util.SystemInfo;
 import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
@@ -42,6 +43,9 @@ public class View {
                 return new Dimension(600, 500);
             }
         };
+        if(SystemInfo.isMacFullWindowContentSupported) {
+            frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+        }
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override

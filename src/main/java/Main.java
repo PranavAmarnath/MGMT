@@ -30,9 +30,6 @@ public class Main {
             else if(System.getProperty("os.name").contains("Mac")) FlatMacLightLaf.setup();
             else FlatIntelliJLaf.setup();
         }
-        if(SystemInfo.isMacFullWindowContentSupported) {
-            View.getFrame().getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
-        }
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.application.name", "MGMT");
         System.setProperty("apple.awt.application.appearance", "system");
