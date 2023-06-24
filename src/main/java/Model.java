@@ -32,6 +32,7 @@ public class Model {
                     reader = new CSVReader(new FileReader(path));
                 } catch (FileNotFoundException e1) {
                     showError("File Not Found :(", e1);
+                    e1.printStackTrace();
                 }
                 try {
                     header = reader.readNext();
