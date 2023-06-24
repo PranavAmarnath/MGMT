@@ -24,10 +24,11 @@ public class Main {
         ClassLoader classLoader = Main.class.getClassLoader();
         URL resource = classLoader.getResource(fileName);
         if (resource == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
+            showError("An Exception Occurred :(", new IllegalArgumentException("File not found! " + fileName));
         } else {
             return new File(resource.toURI());
         }
+        return null;
     }
 
     public static void createModel(JTable table, boolean refresh) {
@@ -37,6 +38,12 @@ public class Main {
     public static void saveModel(JTable table) {
         //Model.save("C:\\Users\\zonep\\IdeaProjects\\MGMT\\src\\main\\resources\\data.csv", table);
         Model.save(file.getPath(), table);
+    }
+
+    private static void showError(String title, Exception e) {
+        JTextPane textPane = new JTextPane();
+        textPane.setText(e.getMessage());
+        JOptionPane.showMessageDialog(View.getFrame(), textPane, title, JOptionPane.ERROR_MESSAGE);
     }
 
     public static Model getModel() {
