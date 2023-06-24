@@ -1,3 +1,5 @@
+import org.jdesktop.swingx.JXHyperlink;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -6,8 +8,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -134,6 +140,9 @@ public class View {
         });
         helpItem = new JMenuItem("About");
         menu2.add(helpItem);
+        helpItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(View.getFrame(), createAboutPanel(), "About MGMT", JOptionPane.PLAIN_MESSAGE);
+        });
 
         textPanel = new JPanel();
         textPanel.setLayout(new BorderLayout(0, 2));
@@ -229,8 +238,78 @@ public class View {
         textPanel.add(textField, BorderLayout.SOUTH);
 
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         textField.requestFocus();
+    }
+
+    static JPanel createAboutPanel() {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        URL imageResource = View.class.getResource("/icon.png");
+        BufferedImage img = toBufferedImage(new ImageIcon(imageResource).getImage());
+        JLabel icon = new JLabel();
+        icon.setIcon(new ImageIcon(img));
+        Image dimg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        icon.setIcon(new ImageIcon(dimg));
+        JPanel imgPanel = new JPanel();
+        imgPanel.add(icon);
+        mainPanel.add(imgPanel);
+
+        JPanel namePanel = new JPanel();
+        JXHyperlink nameLink = new JXHyperlink();
+        nameLink.setText("MGMT");
+        nameLink.setToolTipText("<html>MGMT<br>https://github.com/PranavAmarnath/MGMT</html>");
+        nameLink.addActionListener(e -> {
+            Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+            if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+                try {
+                    desktop.browse(new URI("https://github.com/PranavAmarnath/SecresCSV"));
+                    nameLink.setClicked(true);
+                    nameLink.setClickedColor(new Color(70, 39, 89)); // purple
+                } catch (IOException | URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        namePanel.add(nameLink, SwingConstants.CENTER);
+        JPanel versionPanel = new JPanel();
+        JLabel versionLabel = new JLabel("Version 1.0", SwingConstants.CENTER);
+        versionLabel.setForeground(new Color(150, 150, 150));
+        versionLabel.setFont(new Font("SansSerif", Font.BOLD, 11));
+        versionPanel.add(versionLabel);
+        JPanel copyrightPanel = new JPanel();
+        JLabel copyrightLabel = new JLabel("<html>Copyright © 2023 Pranav Amarnath<br><div style='text-align: center;'>All Rights Reserved.</div><br><div style='text-align: center;'>\"Icon\" Provided By Icons8.</div></html>", SwingConstants.CENTER);
+        copyrightLabel.setForeground(new Color(150, 150, 150));
+        copyrightLabel.setFont(new Font("SansSerif", Font.BOLD, 11));
+        copyrightPanel.add(copyrightLabel);
+
+        JPanel productPanel = new JPanel();
+        productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.PAGE_AXIS));
+        productPanel.add(namePanel);
+        productPanel.add(versionPanel);
+        productPanel.add(copyrightPanel);
+        mainPanel.add(productPanel, BorderLayout.SOUTH);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        return mainPanel;
+    }
+
+    private static BufferedImage toBufferedImage(Image img) {
+        /** Reference: @see https://stackoverflow.com/a/13605411 */
+        if (img instanceof BufferedImage) {
+            return (BufferedImage) img;
+        }
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        // Return the buffered image
+        return bimage;
     }
 
     public static JFrame getFrame() {

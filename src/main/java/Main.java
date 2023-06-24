@@ -1,12 +1,12 @@
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.formdev.flatlaf.util.SystemInfo;
 import com.jthemedetecor.OsThemeDetector;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,10 +17,45 @@ public class Main {
 
     private static Model model;
     private static File file;
-    private static final boolean app = true; // true if testing app, false if creating JAR
+    private static final boolean app = false; // true if testing app, false if creating JAR
 
     public static void main(String[] args) throws URISyntaxException, IOException {
-        FlatLightLaf.setup();
+        final OsThemeDetector detector = OsThemeDetector.getDetector();
+        if (detector.isDark()) {
+            if(System.getProperty("os.name").contains("Win")) FlatDarkLaf.setup();
+            else if(System.getProperty("os.name").contains("Mac")) FlatMacDarkLaf.setup();
+            else FlatDarculaLaf.setup();
+        } else {
+            if(System.getProperty("os.name").contains("Win")) FlatLightLaf.setup();
+            else if(System.getProperty("os.name").contains("Mac")) FlatMacLightLaf.setup();
+            else FlatIntelliJLaf.setup();
+        }
+        if(SystemInfo.isMacFullWindowContentSupported) {
+            View.getFrame().getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+        }
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("apple.awt.application.name", "MGMT");
+        System.setProperty("apple.awt.application.appearance", "system");
+        System.setProperty("apple.awt.antialiasing", "true");
+        System.setProperty("apple.awt.textantialiasing", "true");
+        if(System.getProperty("os.name").contains("Mac")) {
+            try {
+                SwingUtilities.invokeLater(() -> {
+                    Desktop desktop = Desktop.getDesktop();
+
+                    JPanel aboutPanel = View.createAboutPanel();
+                    desktop.setAboutHandler(e -> {
+                        JOptionPane.showMessageDialog(View.getFrame(), aboutPanel, "About MGMT", JOptionPane.PLAIN_MESSAGE);
+                    });
+                    desktop.setPreferencesHandler(e -> {
+                        JOptionPane.showMessageDialog(View.getFrame(), "Preferences", "Preferences", JOptionPane.INFORMATION_MESSAGE);
+                    });
+                    desktop.setQuitHandler((e,r) -> {
+                        System.exit(0);
+                    });
+                });
+            } catch (Exception e) { e.printStackTrace(); }
+        }
         if(app) {
             file = getFileFromResource("data.csv");
         }
@@ -31,13 +66,14 @@ public class Main {
             file = getFileFromResource(inputFilePath);
         }
         SwingUtilities.invokeLater(View::new);
-        final OsThemeDetector detector = OsThemeDetector.getDetector();
         detector.registerListener(isDark -> {
             SwingUtilities.invokeLater(() -> {
                 if (isDark) {
                     FlatDarkLaf.setup();
+                    FlatLaf.updateUI();
                 } else {
                     FlatLightLaf.setup();
+                    FlatLaf.updateUI();
                 }
             });
         });
