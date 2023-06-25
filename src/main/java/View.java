@@ -50,7 +50,7 @@ public class View {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosed(WindowEvent windowEvent) {
+            public void windowClosing(WindowEvent windowEvent) {
                 Main.saveModel(table);
                 System.exit(0);
             }
