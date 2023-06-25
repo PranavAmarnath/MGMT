@@ -66,6 +66,7 @@ public class View {
         textArea = new JTextArea();
         scrollPane.setViewportView(textArea);
         textArea.setEditable(false);
+        textArea.setFocusable(false);
 
         menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
@@ -74,79 +75,17 @@ public class View {
         menuBar.add(menu1);
         menu2 = new JMenu("Help");
         menuBar.add(menu2);
-        addItem = new JMenuItem("Add...");
-        addItem.setToolTipText("Add a new user");
+        addItem = new JMenuItem("New User");
+        addItem.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         menu1.add(addItem);
         addItem.addActionListener(e -> {
-            JDialog dialog = new JDialog(frame, "New") {
-                public Dimension getPreferredSize() {
-                    return new Dimension(300, 170);
-                }
-            };
-            JPanel dialogPanel = new JPanel(new CardLayout());
-            JPanel idPanel = new JPanel(new BorderLayout());
-            idPanel.setBorder(new EmptyBorder(30, 50, 30, 50));
-            JLabel idLabel = new JLabel("Enter id:", JLabel.LEFT);
-            idPanel.add(idLabel, BorderLayout.NORTH);
-            JTextField idField = new JTextField();
-            idPanel.add(idField);
-            JPanel buttonPanel = new JPanel();
-            JButton nextButton = new JButton("Next >>");
-            buttonPanel.add(nextButton, BorderLayout.CENTER);
-            idPanel.add(buttonPanel, BorderLayout.SOUTH);
-            dialogPanel.add(idPanel, "ID");
-            dialog.add(dialogPanel);
-            CardLayout cl = (CardLayout) dialogPanel.getLayout();
-            cl.show(dialogPanel, "ID");
-            JPanel namePanel = new JPanel(new BorderLayout());
-            namePanel.setBorder(new EmptyBorder(30, 50, 30, 50));
-            JLabel nameLabel = new JLabel("Enter name:", JLabel.LEFT);
-            namePanel.add(nameLabel, BorderLayout.NORTH);
-            JTextField nameField = new JTextField();
-            namePanel.add(nameField);
-            JPanel buttonPanel2 = new JPanel();
-            JButton finishButton = new JButton("Finish");
-            buttonPanel2.add(finishButton, BorderLayout.CENTER);
-            namePanel.add(buttonPanel2, BorderLayout.SOUTH);
-            dialogPanel.add(namePanel, "Name");
-            AbstractAction idAction = new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String id = idField.getText();
-                    for(int i = 0; i < table.getModel().getRowCount(); i++) {
-                        if(table.getModel().getValueAt(i, 1).equals(id)) {
-                            JOptionPane.showMessageDialog(dialog, "ID already exists", "Error", JOptionPane.ERROR_MESSAGE);
-                            idField.setText("");
-                            return;
-                        }
-                    }
-                    cl.show(dialogPanel, "Name");
-                    nameField.requestFocus();
-                    AbstractAction nameAction = new AbstractAction() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            DefaultTableModel model = (DefaultTableModel) table.getModel();
-                            model.addRow(new Object[]{model.getRowCount()+1, id, nameField.getText(), "00:00:00", "false", "0"});
-                            table.setModel(model);
-                            dialog.dispose();
-                        }
-                    };
-                    nameField.addActionListener(nameAction);
-                    finishButton.addActionListener(nameAction);
-                }
-            };
-            idField.addActionListener(idAction);
-            nextButton.addActionListener(idAction);
-            dialog.pack();
-            dialog.setLocationRelativeTo(frame);
-            dialog.setVisible(true);
+            addDialog();
         });
         JPanel aboutPanel = createAboutPanel();
         helpItem = new JMenuItem("About");
-        helpItem.setToolTipText("About the app");
         menu2.add(helpItem);
         helpItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(View.getFrame(), aboutPanel, "About MGMT", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showOptionDialog(View.getFrame(), aboutPanel, "", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
         });
 
         textPanel = new JPanel();
@@ -252,10 +191,85 @@ public class View {
             frame.setIconImage(image);
         }
 
+        if(Taskbar.getTaskbar().isSupported(Taskbar.Feature.MENU)) {
+            PopupMenu popupMenu = new PopupMenu(); // popup menu for macOS dock icon
+            MenuItem add = new MenuItem("New User");
+            add.addActionListener(e -> {
+                addDialog();
+            });
+            popupMenu.add(add);
+            Taskbar.getTaskbar().setMenu(popupMenu);
+        }
+
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         textField.requestFocus();
+    }
+
+    private void addDialog() {
+        JDialog dialog = new JDialog(frame, "New") {
+            public Dimension getPreferredSize() {
+                return new Dimension(300, 170);
+            }
+        };
+        JPanel dialogPanel = new JPanel(new CardLayout());
+        JPanel idPanel = new JPanel(new BorderLayout());
+        idPanel.setBorder(new EmptyBorder(30, 50, 30, 50));
+        JLabel idLabel = new JLabel("Enter id:", JLabel.LEFT);
+        idPanel.add(idLabel, BorderLayout.NORTH);
+        JTextField idField = new JTextField();
+        idPanel.add(idField);
+        JPanel buttonPanel = new JPanel();
+        JButton nextButton = new JButton("Next >>");
+        buttonPanel.add(nextButton, BorderLayout.CENTER);
+        idPanel.add(buttonPanel, BorderLayout.SOUTH);
+        dialogPanel.add(idPanel, "ID");
+        dialog.add(dialogPanel);
+        CardLayout cl = (CardLayout) dialogPanel.getLayout();
+        cl.show(dialogPanel, "ID");
+        JPanel namePanel = new JPanel(new BorderLayout());
+        namePanel.setBorder(new EmptyBorder(30, 50, 30, 50));
+        JLabel nameLabel = new JLabel("Enter name:", JLabel.LEFT);
+        namePanel.add(nameLabel, BorderLayout.NORTH);
+        JTextField nameField = new JTextField();
+        namePanel.add(nameField);
+        JPanel buttonPanel2 = new JPanel();
+        JButton finishButton = new JButton("Finish");
+        buttonPanel2.add(finishButton, BorderLayout.CENTER);
+        namePanel.add(buttonPanel2, BorderLayout.SOUTH);
+        dialogPanel.add(namePanel, "Name");
+        AbstractAction idAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = idField.getText();
+                for(int i = 0; i < table.getModel().getRowCount(); i++) {
+                    if(table.getModel().getValueAt(i, 1).equals(id)) {
+                        JOptionPane.showMessageDialog(dialog, "ID already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                        idField.setText("");
+                        return;
+                    }
+                }
+                cl.show(dialogPanel, "Name");
+                nameField.requestFocus();
+                AbstractAction nameAction = new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        DefaultTableModel model = (DefaultTableModel) table.getModel();
+                        model.addRow(new Object[]{model.getRowCount()+1, id, nameField.getText(), "00:00:00", "false", "0"});
+                        table.setModel(model);
+                        dialog.dispose();
+                    }
+                };
+                nameField.addActionListener(nameAction);
+                finishButton.addActionListener(nameAction);
+            }
+        };
+        idField.addActionListener(idAction);
+        nextButton.addActionListener(idAction);
+        dialog.pack();
+        dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
     }
 
     static JPanel createAboutPanel() {
