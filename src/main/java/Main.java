@@ -20,16 +20,6 @@ public class Main {
     private static final boolean app = false; // true if testing app, false if creating JAR
 
     public static void main(String[] args) throws URISyntaxException, IOException {
-        final OsThemeDetector detector = OsThemeDetector.getDetector();
-        if (detector.isDark()) {
-            if(System.getProperty("os.name").contains("Win")) FlatDarkLaf.setup();
-            else if(System.getProperty("os.name").contains("Mac")) FlatMacDarkLaf.setup();
-            else FlatDarculaLaf.setup();
-        } else {
-            if(System.getProperty("os.name").contains("Win")) FlatLightLaf.setup();
-            else if(System.getProperty("os.name").contains("Mac")) FlatMacLightLaf.setup();
-            else FlatIntelliJLaf.setup();
-        }
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.application.name", "MGMT");
         System.setProperty("apple.awt.application.appearance", "system");
@@ -62,14 +52,28 @@ public class Main {
             String inputFilePath = jarFile.getParent() + File.separator + fileName;
             file = getFileFromResource(inputFilePath);
         }
+        final OsThemeDetector detector = OsThemeDetector.getDetector();
+        if (detector.isDark()) {
+            if(System.getProperty("os.name").contains("Win")) FlatDarkLaf.setup();
+            else if(System.getProperty("os.name").contains("Mac")) FlatMacDarkLaf.setup();
+            else FlatDarculaLaf.setup();
+        } else {
+            if(System.getProperty("os.name").contains("Win")) FlatLightLaf.setup();
+            else if(System.getProperty("os.name").contains("Mac")) FlatMacLightLaf.setup();
+            else FlatIntelliJLaf.setup();
+        }
         SwingUtilities.invokeLater(View::new);
         detector.registerListener(isDark -> {
             SwingUtilities.invokeLater(() -> {
-                if (isDark) {
-                    FlatDarkLaf.setup();
+                if (detector.isDark()) {
+                    if(System.getProperty("os.name").contains("Win")) FlatDarkLaf.setup();
+                    else if(System.getProperty("os.name").contains("Mac")) FlatMacDarkLaf.setup();
+                    else FlatDarculaLaf.setup();
                     FlatLaf.updateUI();
                 } else {
-                    FlatLightLaf.setup();
+                    if(System.getProperty("os.name").contains("Win")) FlatLightLaf.setup();
+                    else if(System.getProperty("os.name").contains("Mac")) FlatMacLightLaf.setup();
+                    else FlatIntelliJLaf.setup();
                     FlatLaf.updateUI();
                 }
             });

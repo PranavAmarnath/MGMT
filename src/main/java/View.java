@@ -45,6 +45,7 @@ public class View {
         };
         if(SystemInfo.isMacFullWindowContentSupported) {
             frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+            frame.getRootPane().putClientProperty( "apple.awt.fullWindowContent", true );
         }
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
@@ -54,9 +55,6 @@ public class View {
                 System.exit(0);
             }
         });
-        URL iconURL = getClass().getResource("/icon.png");
-        ImageIcon icon = new ImageIcon(Objects.requireNonNull(iconURL));
-        frame.setIconImage(icon.getImage());
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 20));
         frame.getContentPane().add(mainPanel);
@@ -77,6 +75,7 @@ public class View {
         menu2 = new JMenu("Help");
         menuBar.add(menu2);
         addItem = new JMenuItem("Add...");
+        addItem.setToolTipText("Add a new user");
         menu1.add(addItem);
         addItem.addActionListener(e -> {
             JDialog dialog = new JDialog(frame, "New") {
@@ -99,6 +98,17 @@ public class View {
             dialog.add(dialogPanel);
             CardLayout cl = (CardLayout) dialogPanel.getLayout();
             cl.show(dialogPanel, "ID");
+            JPanel namePanel = new JPanel(new BorderLayout());
+            namePanel.setBorder(new EmptyBorder(30, 50, 30, 50));
+            JLabel nameLabel = new JLabel("Enter name:", JLabel.LEFT);
+            namePanel.add(nameLabel, BorderLayout.NORTH);
+            JTextField nameField = new JTextField();
+            namePanel.add(nameField);
+            JPanel buttonPanel2 = new JPanel();
+            JButton finishButton = new JButton("Finish");
+            buttonPanel2.add(finishButton, BorderLayout.CENTER);
+            namePanel.add(buttonPanel2, BorderLayout.SOUTH);
+            dialogPanel.add(namePanel, "Name");
             AbstractAction idAction = new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -110,17 +120,6 @@ public class View {
                             return;
                         }
                     }
-                    JPanel namePanel = new JPanel(new BorderLayout());
-                    namePanel.setBorder(new EmptyBorder(30, 50, 30, 50));
-                    JLabel nameLabel = new JLabel("Enter name:", JLabel.LEFT);
-                    namePanel.add(nameLabel, BorderLayout.NORTH);
-                    JTextField nameField = new JTextField();
-                    namePanel.add(nameField);
-                    JPanel buttonPanel = new JPanel();
-                    JButton finishButton = new JButton("Finish");
-                    buttonPanel.add(finishButton, BorderLayout.CENTER);
-                    namePanel.add(buttonPanel, BorderLayout.SOUTH);
-                    dialogPanel.add(namePanel, "Name");
                     cl.show(dialogPanel, "Name");
                     nameField.requestFocus();
                     AbstractAction nameAction = new AbstractAction() {
@@ -142,10 +141,12 @@ public class View {
             dialog.setLocationRelativeTo(frame);
             dialog.setVisible(true);
         });
+        JPanel aboutPanel = createAboutPanel();
         helpItem = new JMenuItem("About");
+        helpItem.setToolTipText("About the app");
         menu2.add(helpItem);
         helpItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(View.getFrame(), createAboutPanel(), "About MGMT", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(View.getFrame(), aboutPanel, "About MGMT", JOptionPane.PLAIN_MESSAGE);
         });
 
         textPanel = new JPanel();
@@ -240,6 +241,16 @@ public class View {
             textField.setText("");
         });
         textPanel.add(textField, BorderLayout.SOUTH);
+
+        Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+        URL iconURL = getClass().getResource("/icon.png");
+        Image image = defaultToolkit.getImage(iconURL);
+        try {
+            Taskbar taskbar = Taskbar.getTaskbar();
+            taskbar.setIconImage(image);
+        } catch (UnsupportedOperationException e) {
+            frame.setIconImage(image);
+        }
 
         frame.pack();
         frame.setLocationRelativeTo(null);
