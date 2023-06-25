@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.desktop.QuitStrategy;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +38,10 @@ public class Main {
                     desktop.setPreferencesHandler(e -> {
                         JOptionPane.showOptionDialog(View.getFrame(), "Preferences", "MGMT Preferences", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
                     });
+                    desktop.setQuitHandler((e, r) -> {
+                        saveModel(View.getTable());
+                    });
+                    //desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
                 });
             } catch (Exception e) { e.printStackTrace(); }
         }

@@ -106,9 +106,10 @@ public class Model {
             }
             @Override
             protected void done() {
-                int index = path.lastIndexOf('\\');
-                String fileName = path.substring(index + 1, path.length());
+                //int index = path.lastIndexOf('\\');
+                //String fileName = path.substring(index + 1, path.length());
                 //JOptionPane.showMessageDialog(View.getFrame(), "Finished saving " + fileName);
+                System.exit(0);
             }
         }.execute();
     }
