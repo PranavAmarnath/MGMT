@@ -37,9 +37,6 @@ public class Main {
                     desktop.setPreferencesHandler(e -> {
                         JOptionPane.showOptionDialog(View.getFrame(), "Preferences", "MGMT Preferences", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
                     });
-                    desktop.setQuitHandler((e,r) -> {
-                        View.getFrame().dispose();
-                    });
                 });
             } catch (Exception e) { e.printStackTrace(); }
         }
