@@ -38,8 +38,7 @@ public class Main {
                         JOptionPane.showOptionDialog(View.getFrame(), "Preferences", "MGMT Preferences", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
                     });
                     desktop.setQuitHandler((e,r) -> {
-                        saveModel(View.getTable());
-                        System.exit(0);
+                        View.getFrame().dispose();
                     });
                 });
             } catch (Exception e) { e.printStackTrace(); }
