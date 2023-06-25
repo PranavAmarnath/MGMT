@@ -31,7 +31,7 @@ public class View {
     private JMenu menu1, menu2;
     private JMenuItem addItem, helpItem;
     private JLabel typeLabel;
-    private JTable table;
+    private static JTable table;
     private JTextField textField;
     public View() {
         createAndShowGUI();
@@ -85,7 +85,7 @@ public class View {
         helpItem = new JMenuItem("About");
         menu2.add(helpItem);
         helpItem.addActionListener(e -> {
-            JOptionPane.showOptionDialog(View.getFrame(), aboutPanel, "", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+            JOptionPane.showOptionDialog(View.getFrame(), aboutPanel, "About MGMT", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
         });
 
         textPanel = new JPanel();
@@ -286,13 +286,14 @@ public class View {
 
         JPanel namePanel = new JPanel();
         JXHyperlink nameLink = new JXHyperlink();
+        nameLink.setFocusPainted(false);
         nameLink.setText("MGMT");
         nameLink.setToolTipText("<html>MGMT<br>https://github.com/PranavAmarnath/MGMT</html>");
         nameLink.addActionListener(e -> {
             Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
             if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
                 try {
-                    desktop.browse(new URI("https://github.com/PranavAmarnath/SecresCSV"));
+                    desktop.browse(new URI("https://github.com/PranavAmarnath/MGMT"));
                     nameLink.setClicked(true);
                     nameLink.setClickedColor(new Color(70, 39, 89)); // purple
                 } catch (IOException | URISyntaxException e1) {
@@ -339,6 +340,10 @@ public class View {
 
         // Return the buffered image
         return bimage;
+    }
+
+    public static JTable getTable() {
+        return table;
     }
 
     public static JFrame getFrame() {

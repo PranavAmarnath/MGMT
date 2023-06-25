@@ -32,12 +32,13 @@ public class Main {
 
                     JPanel aboutPanel = View.createAboutPanel();
                     desktop.setAboutHandler(e -> {
-                        JOptionPane.showMessageDialog(View.getFrame(), aboutPanel, "About MGMT", JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showOptionDialog(View.getFrame(), aboutPanel, "About MGMT", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
                     });
                     desktop.setPreferencesHandler(e -> {
-                        JOptionPane.showMessageDialog(View.getFrame(), "Preferences", "Preferences", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showOptionDialog(View.getFrame(), "Preferences", "MGMT Preferences", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
                     });
                     desktop.setQuitHandler((e,r) -> {
+                        saveModel(View.getTable());
                         System.exit(0);
                     });
                 });
