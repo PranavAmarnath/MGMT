@@ -39,7 +39,7 @@ public class Main {
                     });
                     desktop.setQuitHandler((e,r) -> {
                         saveModel(View.getTable());
-                        r.performQuit();
+                        System.exit(0);
                     });
                 });
             } catch (Exception e) { e.printStackTrace(); }
