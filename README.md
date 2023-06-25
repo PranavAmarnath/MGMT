@@ -3,7 +3,8 @@
 A Java Swing application for logging into and out of a system to track hours spent by users.
 
 ## Download
-<a href="https://github.com/PranavAmarnath/MGMT/releases/download/v1.0/MGMT-1.0-SNAPSHOT.jar" onclick="window.open('https://github.com/PranavAmarnath/MGMT/releases/download/v1.0/data.csv'); return true;">
+<a href="https://github.com/PranavAmarnath/MGMT/releases/download/v1.0/MGMT-1.0-SNAPSHOT.jar"
+   onclick="window.open('https://github.com/PranavAmarnath/MGMT/releases/download/v1.0/data.csv');">
     <img src="https://img.shields.io/badge/MGMT-1.0-blue" alt="Download MGMT 1.0" />
 </a>
 <p>
