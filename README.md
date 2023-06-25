@@ -3,13 +3,15 @@
 A Java Swing application for logging into and out of a system to track hours spent by users.
 
 ## Download
-<a href="https://github.com/PranavAmarnath/MGMT/releases/download/v1.0/MGMT-1.0-SNAPSHOT.jar"
-   onclick="window.open('https://github.com/PranavAmarnath/MGMT/releases/download/v1.0/data.csv');">
+<a href="https://github.com/PranavAmarnath/MGMT/releases/download/v1.0/MGMT-1.0-SNAPSHOT.jar">
     <img src="https://img.shields.io/badge/MGMT-1.0-blue" alt="Download MGMT 1.0" />
+</a>
+<a href="https://github.com/PranavAmarnath/MGMT/releases/download/v1.0/data.csv">
+    <img src="https://img.shields.io/badge/data.csv--green" alt="Download data.csv template" />
 </a>
 <p>
 Run with java -jar MGMT-1.0-SNAPSHOT.jar (or double-click it). Requires Java 17 or newer.
-Make sure to have the `data.csv` file in the same folder as the JAR file.
+Make sure to have the data.csv file in the same folder as the JAR file.
 
 ## Insight
 The purpose of this application is to manage the hours of people who log in and log out of the system (the users) and use this statistic to measure commitment.
