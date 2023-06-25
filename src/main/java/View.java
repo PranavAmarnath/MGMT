@@ -52,7 +52,6 @@ public class View {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 Main.saveModel(table);
-                System.exit(0);
             }
         });
         mainPanel = new JPanel();
